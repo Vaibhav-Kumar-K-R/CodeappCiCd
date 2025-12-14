@@ -24,7 +24,7 @@ export default function StreamVideoProvider({
     const [streamToken, setStreamToken] = useState<string | null>(null);
     const [call, setCall] = useState<Call | undefined>(undefined);
     const [client, setClient] = useState<StreamVideoClient | null>(null);
-    const callId = "audio_room_f4ea77fd-629a-4e0e-bec4-0a18a275f9d";
+    const callId = currentUser.roomId;
 
     // 1. ⚙️ EFFECT: Fetch Token (Depends on currentUser)
     useEffect(() => {
@@ -32,7 +32,7 @@ export default function StreamVideoProvider({
         if (!currentUser.username || !currentUser.roomId || streamToken) return;
 
         const fetchStreamToken = async () => {
-            const userId = `${currentUser.roomId}${currentUser.username}`;
+            const userId = `${currentUser.roomId}-${currentUser.username}`;
             
             try {
                 const response = await fetch(
@@ -68,7 +68,7 @@ export default function StreamVideoProvider({
         // Check 1: User data and token must be available
         // Check 2: Client hasn't been created yet
         if (apiKey && username && roomId && streamToken && !client) {
-            const userId = `${roomId}${username}`;
+            const userId = `${roomId}-${username}`;
             const user: User = {
                 id: userId,
                 name: username,
@@ -110,8 +110,8 @@ export default function StreamVideoProvider({
                     data: {
                         members: [],
                         custom: {
-                            title: "React Rooms",
-                            description: "Talking about React",
+                            title: "",
+                            description: "",
                         },
                         settings_override:{
                           backstage:{
