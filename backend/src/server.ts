@@ -93,7 +93,7 @@ io.on("connection", (socket) => {
 
     const token=jwt.sign(
         {
-            user_id: `${username}`,
+            user_id: `${roomId}-${username}`,
             name: username,
             image:'https://getstream.io/random_svg/?id='+roomId+'&name='+username
         },

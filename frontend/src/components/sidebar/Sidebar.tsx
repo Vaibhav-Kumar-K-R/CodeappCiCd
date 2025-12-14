@@ -12,6 +12,10 @@ import {
     useCallStateHooks,
     ParticipantsAudio,
 } from "@stream-io/video-react-sdk"
+import { IoCodeSlash } from "react-icons/io5"
+import { Tooltip } from "react-tooltip"
+import { tooltipStyles } from "./tooltipStyles"
+import { MdOutlineDraw } from "react-icons/md"
 import { useState } from "react"
 import { PiMicrophone } from "react-icons/pi"
 import { BiMicrophoneOff } from "react-icons/bi"
@@ -83,7 +87,6 @@ function Sidebar() {
                         viewName={VIEWS.CLIENTS}
                         icon={viewIcons[VIEWS.CLIENTS]}
                     />
-                    
                     {/* <div className="flex h-fit items-center justify-center">
                     <button
                         className="justify-cente flex items-center  rounded p-1.5 transition-colors duration-200 ease-in-out hover:bg-[#3D404A]"
@@ -142,7 +145,7 @@ function Sidebar() {
                         icon={viewIcons[VIEWS.SETTINGS]}
                     />
                 </div>
-               
+                {/* Button to change activity state coding or drawing */}
             </div>
             <div
                 className="absolute left-0 top-0 z-20 w-full flex-col bg-[#252526] text-white md:static md:min-w-[300px]"
