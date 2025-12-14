@@ -19,20 +19,15 @@ interface StreamVideoProviderProps {
 export default function StreamVideoProvider({
     children,
 }: StreamVideoProviderProps) {
-<<<<<<< HEAD
-    const { currentUser } = useAppContext()
-    const [streamToken, setStreamToken] = useState<string | null>(null)
-    const [call, setCall] = useState<Call | undefined>(undefined)
-    const [client, setClient] = useState<StreamVideoClient | null>(null)
-    const callId = "audio_room_f4ea77fd-629a-4e0e-bec4-0a18a275f9d"
-=======
+
+   
+
     const { currentUser } = useAppContext();
 
     const [streamToken, setStreamToken] = useState<string | null>(null);
     const [call, setCall] = useState<Call | undefined>(undefined);
     const [client, setClient] = useState<StreamVideoClient | null>(null);
     const callId = currentUser.roomId;
->>>>>>> parent of ff594b9 (Resolved jwt issue)
 
     // 1. ⚙️ EFFECT: Fetch Token (Depends on currentUser)
     useEffect(() => {
@@ -40,13 +35,8 @@ export default function StreamVideoProvider({
         if (!currentUser.username || !currentUser.roomId || streamToken) return
 
         const fetchStreamToken = async () => {
-<<<<<<< HEAD
-            // const userId = `${currentUser.roomId}${currentUser.username}`;
-
-=======
             const userId = `${currentUser.roomId}-${currentUser.username}`;
             
->>>>>>> parent of ff594b9 (Resolved jwt issue)
             try {
                 const response = await fetch(
                     `${import.meta.env.VITE_BACKEND_URL}/api/stream-token`,
@@ -82,11 +72,7 @@ export default function StreamVideoProvider({
         // Check 1: User data and token must be available
         // Check 2: Client hasn't been created yet
         if (apiKey && username && roomId && streamToken && !client) {
-<<<<<<< HEAD
-            // const userId = `${roomId}${username}`;
-=======
             const userId = `${roomId}-${username}`;
->>>>>>> parent of ff594b9 (Resolved jwt issue)
             const user: User = {
                 id: username,
                 name: username,
