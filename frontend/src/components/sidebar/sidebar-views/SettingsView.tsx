@@ -4,7 +4,13 @@ import useResponsive from "@/hooks/useResponsive"
 import { editorFonts } from "@/resources/Fonts"
 import { editorThemes } from "@/resources/Themes"
 import { langNames } from "@uiw/codemirror-extensions-langs"
-import { ChangeEvent, useEffect } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
+import {
+    ParticipantsAudio,
+    useCallStateHooks,
+} from "@stream-io/video-react-sdk"
+import { HiMiniSpeakerWave } from "react-icons/hi2";
+import { GiSpeakerOff } from "react-icons/gi";
 
 function SettingsView() {
     const {
@@ -20,6 +26,11 @@ function SettingsView() {
         resetSettings,
     } = useSettings()
     const { viewHeight } = useResponsive()
+
+    const [callAudio, setCallAudio] = useState(true)
+
+    const { useParticipants } = useCallStateHooks()
+    const participants = useParticipants()
 
     const handleFontFamilyChange = (e: ChangeEvent<HTMLSelectElement>) =>
         setFontFamily(e.target.value)
@@ -39,12 +50,13 @@ function SettingsView() {
             editor.style.fontFamily = `${fontFamily}, monospace`
         }
     }, [fontFamily])
-
+    
     return (
         <div
-            className="flex flex-col  items-center gap-2 p-4"
-            style={{ height: viewHeight }}
+        className="flex flex-col  items-center gap-2 p-4"
+        style={{ height: viewHeight }}
         >
+            {callAudio && <ParticipantsAudio participants={participants} />}
             <h1 className="view-title">Settings</h1>
             {/* Choose Font Family option */}
             <div className="flex w-full items-end gap-2">
@@ -84,7 +96,18 @@ function SettingsView() {
                 options={langNames}
                 title="Language"
             />
-            {/* Show GitHub corner option */}
+            <br />
+            <div className="flex flex-row justify-start gap-2 items-center  w-full">
+                <p>Call Audio</p>
+                <button
+                className="text-3xl"
+                    onClick={() => {
+                        setCallAudio((prev) => !prev)
+                    }}
+                >
+                    {callAudio ? <HiMiniSpeakerWave></HiMiniSpeakerWave> : <GiSpeakerOff></GiSpeakerOff>}
+                </button>
+            </div>
 
             <button
                 className="bg-darkHover mt-auto w-full rounded-md border-none px-4 py-2 text-white outline-none"

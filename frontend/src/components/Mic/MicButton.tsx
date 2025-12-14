@@ -1,25 +1,33 @@
-import { useCallStateHooks } from "@stream-io/video-react-sdk"
+import {
+    useCallStateHooks,
+    ParticipantsAudio,
+} from "@stream-io/video-react-sdk"
 
 const MyMicButton = () => {
-    const { useMicrophoneState, useLocalParticipant } = useCallStateHooks()
+    const { useMicrophoneState, useLocalParticipant, useParticipants } =
+        useCallStateHooks()
     const { microphone, isMute } = useMicrophoneState()
     const localParticipant = useLocalParticipant()
+    const participants = useParticipants()
     const callRole = localParticipant?.roles
     console.log(callRole)
 
     return (
-        <button
-            className="mic-button"
-            onClick={async () => {
-                if (isMute) {
-                    await microphone.enable()
-                } else {
-                    await microphone.disable()
-                }
-            }}
-        >
-            {isMute ? "Unmute" : "Mute"}
-        </button>
+        <>
+            <ParticipantsAudio participants={participants} />
+            <button
+                className="mic-button"
+                onClick={async () => {
+                    if (isMute) {
+                        await microphone.enable()
+                    } else {
+                        await microphone.disable()
+                    }
+                }}
+            >
+                {isMute ? "Unmute" : "Mute"}
+            </button>
+        </>
     )
 }
 

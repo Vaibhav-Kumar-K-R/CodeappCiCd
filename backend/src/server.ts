@@ -7,7 +7,6 @@ import express, { Response, Request } from "express";
 import { SocketEvent, SocketId } from "./types/socket";
 import { USER_CONNECTION_STATUS, User } from "./types/user";
 import jwt from "jsonwebtoken";
-import { log } from "console";
 
 dotenv.config();
 
@@ -82,9 +81,10 @@ io.on("connection", (socket) => {
       socketId: socket.id,
       currentFile: null,
       isAdmin: currentRoom.length === 0,
-      canWrite: currentRoom.length === 0,
-      canDraw: currentRoom.length === 0,
+      canWrite: true,
+      canDraw: true,
     };
+    
     userSocketMap.push(user);
     socket.join(roomId);
     socket.broadcast.to(roomId).emit(SocketEvent.USER_JOINED, { user });
@@ -292,10 +292,10 @@ app.post('/api/stream-token', (req, res) => {
     
    
     // 3. Sign the token securely using the server's environment variable
-    const token = jwt.sign(
+    const token = jwt.sign( 
        authenticatedUser, 
         process.env.STREAM_SECRET_KEY as string,
-        { expiresIn: '24h', notBefore: '-50s' }
+        { expiresIn: '24h' }
     );
     console.log("Token sent ",token);
     

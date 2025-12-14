@@ -8,8 +8,13 @@ import { ACTIVITY_STATE } from "@/types/app"
 import { SocketEvent } from "@/types/socket"
 import { VIEWS } from "@/types/view"
 import cn from "classnames"
-
+import {
+    useCallStateHooks,
+    ParticipantsAudio,
+} from "@stream-io/video-react-sdk"
 import { useState } from "react"
+import { PiMicrophone } from "react-icons/pi"
+import { BiMicrophoneOff } from "react-icons/bi"
 
 function Sidebar() {
     const {
@@ -21,9 +26,14 @@ function Sidebar() {
     } = useViews()
     const { minHeightReached } = useResponsive()
     const { activityState, setActivityState } = useAppContext()
+    const { useMicrophoneState, useParticipants } = useCallStateHooks()
+    const { microphone, isMute } = useMicrophoneState()
+    const participants = useParticipants()
 
     const { socket } = useSocket()
     const { isMobile } = useWindowDimensions()
+    const [callMuted, setCallMuted] = useState(isMute)
+
     //@ts-ignore
     const [showTooltip, setShowTooltip] = useState(true)
     //@ts-ignore
@@ -51,6 +61,7 @@ function Sidebar() {
                     },
                 )}
             >
+                <ParticipantsAudio participants={participants} />
                 <div>
                     <SidebarButton
                         viewName={VIEWS.FILES}
@@ -72,19 +83,8 @@ function Sidebar() {
                         viewName={VIEWS.CLIENTS}
                         icon={viewIcons[VIEWS.CLIENTS]}
                     />
-                    <SidebarButton
-                        viewName={VIEWS.ROOM}
-                        icon={viewIcons[VIEWS.ROOM]}
-                    />
-                </div>
-                <div>
-                    <SidebarButton
-                        viewName={VIEWS.SETTINGS}
-                        icon={viewIcons[VIEWS.SETTINGS]}
-                    />
-                </div>
-                {/* Button to change activity state coding or drawing */}
-                {/* <div className="flex h-fit items-center justify-center">
+                    
+                    {/* <div className="flex h-fit items-center justify-center">
                     <button
                         className="justify-cente flex items-center  rounded p-1.5 transition-colors duration-200 ease-in-out hover:bg-[#3D404A]"
                         onClick={changeState}
@@ -115,6 +115,34 @@ function Sidebar() {
                         />
                     )}
                 </div> */}
+                </div>
+                <div>
+                    <div className="rounded text-center text-3xl hover:bg-[#3D404A] ">
+                        <button
+                            className="mic-button"
+                            onClick={async () => {
+                                if (isMute) {
+                                    await microphone.enable()
+                                    setCallMuted(false)
+                                } else {
+                                    await microphone.disable()
+                                    setCallMuted(true)
+                                }
+                            }}
+                        >
+                            {!callMuted ? (
+                                <PiMicrophone />
+                            ) : (
+                                <BiMicrophoneOff />
+                            )}
+                        </button>
+                    </div>
+                    <SidebarButton
+                        viewName={VIEWS.SETTINGS}
+                        icon={viewIcons[VIEWS.SETTINGS]}
+                    />
+                </div>
+               
             </div>
             <div
                 className="absolute left-0 top-0 z-20 w-full flex-col bg-[#252526] text-white md:static md:min-w-[300px]"
