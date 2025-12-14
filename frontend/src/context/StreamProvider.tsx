@@ -28,6 +28,7 @@ export default function StreamVideoProvider({
     const [call, setCall] = useState<Call | undefined>(undefined);
     const [client, setClient] = useState<StreamVideoClient | null>(null);
     const callId = currentUser.roomId;
+  
 
     // 1. ⚙️ EFFECT: Fetch Token (Depends on currentUser)
     useEffect(() => {
