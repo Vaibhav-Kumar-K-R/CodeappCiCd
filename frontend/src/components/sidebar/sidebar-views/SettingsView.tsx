@@ -56,7 +56,7 @@ function SettingsView() {
         className="flex flex-col  items-center gap-2 p-4"
         style={{ height: viewHeight }}
         >
-            {callAudio && <ParticipantsAudio participants={participants} />}
+             <ParticipantsAudio participants={participants} />
             <h1 className="view-title">Settings</h1>
             {/* Choose Font Family option */}
             <div className="flex w-full items-end gap-2">
