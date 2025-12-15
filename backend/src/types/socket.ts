@@ -28,6 +28,9 @@ enum SocketEvent {
   TYPING_PAUSE = "typing-pause",
   USERNAME_EXISTS = "username-exists",
   REQUEST_PENDING = "request-pending",
+  KICK_USER = "kick-user",
+  USER_KICKED = "user-kicked",
+  GOT_KICKED = "got-kicked",
 }
 
 interface SocketContext {

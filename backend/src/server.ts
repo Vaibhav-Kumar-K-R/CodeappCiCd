@@ -84,26 +84,14 @@ io.on("connection", (socket) => {
       canWrite: true,
       canDraw: true,
     };
-    
+
     userSocketMap.push(user);
     socket.join(roomId);
     socket.broadcast.to(roomId).emit(SocketEvent.USER_JOINED, { user });
 
     const users = getUsersInRoom(roomId);
 
-    const token=jwt.sign(
-        {
-            user_id: `${roomId}-${username}`,
-            name: username,
-            image:'https://getstream.io/random_svg/?id='+roomId+'&name='+username
-        },
-        process.env.STREAM_SECRET_KEY as string,{
-          expiresIn:'24h',
-          notBefore:-10
-        }
-    );
-   
-    io.to(socket.id).emit(SocketEvent.JOIN_ACCEPTED, { user,token, users });
+    io.to(socket.id).emit(SocketEvent.JOIN_ACCEPTED, { user, users });
   });
 
   socket.on("disconnecting", () => {
@@ -113,6 +101,21 @@ io.on("connection", (socket) => {
     socket.broadcast.to(roomId).emit(SocketEvent.USER_DISCONNECTED, { user });
     userSocketMap = userSocketMap.filter((u) => u.socketId !== socket.id);
     socket.leave(roomId);
+  });
+
+  socket.on(SocketEvent.KICK_USER, ({ socketId }) => {
+    const kickedUser = getUserBySocketId(socketId);
+    if (!kickedUser) return;
+    const roomId = kickedUser.roomId;
+    const kickedUserSocket = io.sockets.sockets.get(socketId);
+    if (kickedUserSocket) {
+      io.to(socketId).emit(SocketEvent.GOT_KICKED, { user: kickedUser });
+
+      kickedUserSocket.leave(roomId);
+    }
+    io.to(roomId).emit(SocketEvent.USER_DISCONNECTED, { user: kickedUser });
+
+    userSocketMap = userSocketMap.filter((u) => u.socketId !== socketId);
   });
 
   // Handle file actions
@@ -282,26 +285,23 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
+app.post("/api/stream-token", (req, res) => {
+  // 1. Authenticate the user (e.g., check session or credentials)
+  //@ts-ignore
+  console.log(req.body);
+  //@ts-ignore
+  const authenticatedUser = req.body; // Get user from session/auth middleware
 
-app.post('/api/stream-token', (req, res) => {
-    // 1. Authenticate the user (e.g., check session or credentials)
-    //@ts-ignore
-    console.log(req.body);
-     //@ts-ignore
-    const authenticatedUser = req.body; // Get user from session/auth middleware
-    
-   
-    // 3. Sign the token securely using the server's environment variable
-    const token = jwt.sign( 
-       authenticatedUser, 
-        process.env.STREAM_SECRET_KEY as string,
-        { expiresIn: '24h' }
-    );
-    console.log("Token sent ",token);
-    
+  // 3. Sign the token securely using the server's environment variable
+  const token = jwt.sign(
+    authenticatedUser,
+    process.env.STREAM_SECRET_KEY as string,
+    { expiresIn: "24h" },
+  );
+  console.log("Token sent ", token);
 
-    // 4. Send ONLY the token back to the client
-    res.json({ token });
+  // 4. Send ONLY the token back to the client
+  res.json({ token });
 });
 
 server.listen(PORT, () => {
