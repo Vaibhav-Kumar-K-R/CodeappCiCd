@@ -12,15 +12,20 @@ import {
     useCallStateHooks,
     ParticipantsAudio,
 } from "@stream-io/video-react-sdk"
-import { IoCodeSlash } from "react-icons/io5"
-import { Tooltip } from "react-tooltip"
-import { tooltipStyles } from "./tooltipStyles"
-import { MdOutlineDraw } from "react-icons/md"
 import { useState } from "react"
 import { PiMicrophone } from "react-icons/pi"
 import { BiMicrophoneOff } from "react-icons/bi"
+import { GiSpeaker, GiSpeakerOff } from "react-icons/gi"
 
 function Sidebar() {
+    const { useMicrophoneState, useLocalParticipant, useParticipants } =
+        useCallStateHooks()
+    const { microphone, isMute } = useMicrophoneState()
+    const localParticipant = useLocalParticipant()
+    const participants = useParticipants()
+    const callRole = localParticipant?.roles
+    console.log(callRole)
+
     const {
         activeView,
         isSidebarOpen,
@@ -30,13 +35,12 @@ function Sidebar() {
     } = useViews()
     const { minHeightReached } = useResponsive()
     const { activityState, setActivityState } = useAppContext()
-    const { useMicrophoneState, useParticipants } = useCallStateHooks()
-    const { microphone, isMute } = useMicrophoneState()
-    const participants = useParticipants()
 
     const { socket } = useSocket()
     const { isMobile } = useWindowDimensions()
-    const [callMuted, setCallMuted] = useState(isMute)
+
+    const [callMute, setCallMute] = useState(isMute)
+    const [callAudio, setCallAudio] = useState(!false)
 
     //@ts-ignore
     const [showTooltip, setShowTooltip] = useState(true)
@@ -65,7 +69,6 @@ function Sidebar() {
                     },
                 )}
             >
-                <ParticipantsAudio participants={participants} />
                 <div>
                     <SidebarButton
                         viewName={VIEWS.FILES}
@@ -87,6 +90,44 @@ function Sidebar() {
                         viewName={VIEWS.CLIENTS}
                         icon={viewIcons[VIEWS.CLIENTS]}
                     />
+
+                    <div>
+                        {callAudio && (
+                            <ParticipantsAudio participants={participants} />
+                        )}
+
+                        <button
+                            className="mic-button pt-2"
+                            onClick={async () => {
+                                if (isMute) {
+                                    await microphone.enable()
+                                } else {
+                                    await microphone.disable()
+                                }
+                                setCallMute((prev) => !prev)
+                            }}
+                        >
+                            {callMute ? (
+                                <BiMicrophoneOff size={30}></BiMicrophoneOff>
+                            ) : (
+                                <PiMicrophone size={30}></PiMicrophone>
+                            )}
+                        </button>
+
+                        <button
+                            className="call-audio pt-4"
+                            onClick={async () => {
+                                setCallAudio((prev) => !prev)
+                            }}
+                        >
+                            {callAudio ? (
+                                <GiSpeakerOff size={30}></GiSpeakerOff>
+                            ) : (
+                                <GiSpeaker size={30}></GiSpeaker>
+                            )}
+                        </button>
+                    </div>
+
                     {/* <div className="flex h-fit items-center justify-center">
                     <button
                         className="justify-cente flex items-center  rounded p-1.5 transition-colors duration-200 ease-in-out hover:bg-[#3D404A]"
@@ -120,26 +161,6 @@ function Sidebar() {
                 </div> */}
                 </div>
                 <div>
-                    <div className="rounded text-center text-3xl hover:bg-[#3D404A] ">
-                        <button
-                            className="mic-button"
-                            onClick={async () => {
-                                if (isMute) {
-                                    await microphone.enable()
-                                    setCallMuted(false)
-                                } else {
-                                    await microphone.disable()
-                                    setCallMuted(true)
-                                }
-                            }}
-                        >
-                            {!callMuted ? (
-                                <PiMicrophone />
-                            ) : (
-                                <BiMicrophoneOff />
-                            )}
-                        </button>
-                    </div>
                     <SidebarButton
                         viewName={VIEWS.SETTINGS}
                         icon={viewIcons[VIEWS.SETTINGS]}

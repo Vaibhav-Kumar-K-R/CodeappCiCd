@@ -1,4 +1,3 @@
-// import illustration from "@/assets/illustration.svg"
 import FormComponent from "@/components/forms/FormComponent"
 
 function HomePage() {
@@ -7,7 +6,7 @@ function HomePage() {
             <div className="my-12 flex h-full min-w-full flex-col items-center justify-evenly sm:flex-row sm:pt-0">
                 <div className="flex w-full justify-center sm:w-1/2 sm:pl-4">
                     <img
-                        src={".../../../public/illustration.png"}
+                        src={"illustration.png"}
                         alt="Code Pair Studio Illustration"
                         className="mx-auto w-[250px] sm:w-[400px]"
                     />

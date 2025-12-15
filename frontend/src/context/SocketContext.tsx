@@ -91,6 +91,8 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     const handleUserLeft = useCallback(
         ({ user }: { user: User }) => {
+            console.log("called")
+
             toast.success(`${user.username} left the room`)
             setUsers(users.filter((u: User) => u.username !== user.username))
         },

@@ -13,7 +13,7 @@ const MyMicButton = () => {
     console.log(callRole)
 
     return (
-        <>
+        <div>
             <ParticipantsAudio participants={participants} />
             <button
                 className="mic-button"
@@ -27,7 +27,7 @@ const MyMicButton = () => {
             >
                 {isMute ? "Unmute" : "Mute"}
             </button>
-        </>
+        </div>
     )
 }
 
