@@ -1,9 +1,10 @@
 import { useAppContext } from "@/context/AppContext"
 import { useSocket } from "@/context/SocketContext"
 import useWindowDimensions from "@/hooks/useWindowDimensions"
-// import { SocketEvent } from "@/types/socket"
+import { SocketEvent } from "@/types/socket"
 import { useCallback, useEffect } from "react"
-import { HistoryEntry, RecordsDiff, TLRecord, Tldraw, useEditor } from "tldraw"
+// 1. Import getSnapshot from tldraw
+import { HistoryEntry, RecordsDiff, TLRecord, Tldraw, useEditor, getSnapshot } from "tldraw"
 
 function DrawingEditor() {
     const { isMobile } = useWindowDimensions()
@@ -28,16 +29,15 @@ function ReachEditor() {
     const handleChangeEvent = useCallback(
         (change: HistoryEntry<TLRecord>) => {
             const snapshot = change.changes
-           
-            // Update the drawing data in the context
-            setDrawingData(editor.store.getSnapshot())
-            // Emit the snapshot to the server
-            // socket.emit(SocketEvent.DRAWING_UPDATE, { snapshot })
+            
+            // 2. Use getSnapshot(editor.store) instead of editor.store.getSnapshot()
+            setDrawingData(getSnapshot(editor.store))
+            
+            socket.emit(SocketEvent.DRAWING_UPDATE, { snapshot })
         },
         [editor.store, setDrawingData, socket],
     )
 
-    // Handle drawing updates from other clients
     const handleRemoteDrawing = useCallback(
         ({ snapshot }: { snapshot: RecordsDiff<TLRecord> }) => {
             editor.store.mergeRemoteChanges(() => {
@@ -54,33 +54,34 @@ function ReachEditor() {
                 }
             })
 
-            setDrawingData(editor.store.getSnapshot())
+            // 3. Update here as well
+            setDrawingData(getSnapshot(editor.store))
         },
         [editor.store, setDrawingData],
     )
 
     useEffect(() => {
-        // Load the drawing data from the context
         if (drawingData && Object.keys(drawingData).length > 0) {
-            editor.store.loadSnapshot(drawingData)
+            editor.store.mergeRemoteChanges(() => {
+                editor.store.clear()
+                editor.store.put(Object.values(drawingData))
+            })
         }
-    }, [])
+    }, [editor])
 
     useEffect(() => {
         const cleanupFunction = editor.store.listen(handleChangeEvent, {
             source: "user",
             scope: "document",
         })
-        // Listen for drawing updates from other clients
-        // socket.on(SocketEvent.DRAWING_UPDATE, handleRemoteDrawing)
+        socket.on(SocketEvent.DRAWING_UPDATE, handleRemoteDrawing)
 
-        // Cleanup
         return () => {
             cleanupFunction()
-            // socket.off(SocketEvent.DRAWING_UPDATE)
+            socket.off(SocketEvent.DRAWING_UPDATE)
         }
     }, [
-        drawingData,
+        // Removed drawingData from dependencies to prevent unnecessary re-subscriptions
         editor.store,
         handleChangeEvent,
         handleRemoteDrawing,

@@ -31,6 +31,9 @@ enum SocketEvent {
   KICK_USER = "kick-user",
   USER_KICKED = "user-kicked",
   GOT_KICKED = "got-kicked",
+  REQUEST_DRAWING = "request-drawing",
+	SYNC_DRAWING = "sync-drawing",
+	DRAWING_UPDATE = "drawing-update"
 }
 
 interface SocketContext {
