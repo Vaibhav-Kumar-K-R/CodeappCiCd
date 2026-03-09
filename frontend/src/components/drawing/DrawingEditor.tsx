@@ -28,7 +28,7 @@ function ReachEditor() {
     const handleChangeEvent = useCallback(
         (change: HistoryEntry<TLRecord>) => {
             const snapshot = change.changes
-            console.log(snapshot)
+           
             // Update the drawing data in the context
             setDrawingData(editor.store.getSnapshot())
             // Emit the snapshot to the server

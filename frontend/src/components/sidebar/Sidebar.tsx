@@ -16,15 +16,18 @@ import { useState } from "react"
 import { PiMicrophone } from "react-icons/pi"
 import { BiMicrophoneOff } from "react-icons/bi"
 import { GiSpeaker, GiSpeakerOff } from "react-icons/gi"
+import { tooltipStyles } from "./tooltipStyles"
+import { Tooltip } from "react-tooltip"
+import { IoCodeSlash } from "react-icons/io5"
+import { MdOutlineDraw } from "react-icons/md"
 
 function Sidebar() {
-    const { useMicrophoneState, useLocalParticipant, useParticipants } =
+    const { useMicrophoneState, useParticipants } =
         useCallStateHooks()
     const { microphone, isMute } = useMicrophoneState()
-    const localParticipant = useLocalParticipant()
+    
     const participants = useParticipants()
-    const callRole = localParticipant?.roles
-    console.log(callRole)
+   
 
     const {
         activeView,
@@ -63,7 +66,7 @@ function Sidebar() {
         <aside className="flex w-full md:h-full md:max-h-full md:min-h-full md:w-auto">
             <div
                 className={cn(
-                    "fixed bottom-0 left-0 z-50 flex h-[50px] w-full gap-4 self-end overflow-hidden border-t bg-[#252526] p-2 text-white    md:static md:h-full md:w-[50px] md:min-w-[50px] md:flex-col md:justify-between md:border-r md:border-t-0 md:p-2 md:pt-4",
+                    "fixed bottom-0 left-0 z-50 flex h-[50px] w-full  self-end overflow-hidden border-t bg-[#252526]  text-white    md:static md:h-full md:w-[50px] md:min-w-[50px] md:flex-col md:justify-between md:border-r md:border-t-0 ",
                     {
                         hidden: minHeightReached,
                     },
@@ -91,7 +94,40 @@ function Sidebar() {
                         icon={viewIcons[VIEWS.CLIENTS]}
                     />
 
-                    <div>
+                  
+                 <div className="relative flex flex-col items-center">
+                    <button
+                        className="justify-center flex items-center  rounded p-2 transition-colors duration-200 ease-in-out hover:bg-[#3D404A]"
+                        onClick={changeState}
+                        onMouseEnter={() => setShowTooltip(true)}
+                        data-tooltip-id="activity-state-tooltip"
+                        data-tooltip-content={
+                            activityState === ACTIVITY_STATE.CODING
+                                ? "Switch to Drawing Mode"
+                                : "Switch to Coding Mode"
+                        }
+                    >
+                        {activityState === ACTIVITY_STATE.CODING ? (
+                            <MdOutlineDraw size={30} />
+                        ) : (
+                            <IoCodeSlash size={30} />
+                        )}
+                    </button>
+                    {showTooltip && (
+                        <Tooltip
+                            id="activity-state-tooltip"
+                            place="right"
+                            offset={15}
+                            className="!z-50"
+                            style={tooltipStyles}
+                            noArrow={false}
+                            positionStrategy="fixed"
+                            float={true}
+                        />
+                    )}
+                </div> 
+
+                  <div className="w-full justify-center  p-2 items-center">
                         {callAudio && (
                             <ParticipantsAudio participants={participants} />
                         )}
@@ -128,45 +164,12 @@ function Sidebar() {
                         </button>
                     </div>
 
-                    {/* <div className="flex h-fit items-center justify-center">
-                    <button
-                        className="justify-cente flex items-center  rounded p-1.5 transition-colors duration-200 ease-in-out hover:bg-[#3D404A]"
-                        onClick={changeState}
-                        onMouseEnter={() => setShowTooltip(true)}
-                        data-tooltip-id="activity-state-tooltip"
-                        data-tooltip-content={
-                            activityState === ACTIVITY_STATE.CODING
-                                ? "Switch to Drawing Mode"
-                                : "Switch to Coding Mode"
-                        }
-                    >
-                        {activityState === ACTIVITY_STATE.CODING ? (
-                            <MdOutlineDraw size={30} />
-                        ) : (
-                            <IoCodeSlash size={30} />
-                        )}
-                    </button>
-                    {showTooltip && (
-                        <Tooltip
-                            id="activity-state-tooltip"
-                            place="right"
-                            offset={15}
-                            className="!z-50"
-                            style={tooltipStyles}
-                            noArrow={false}
-                            positionStrategy="fixed"
-                            float={true}
-                        />
-                    )}
-                </div> */}
-                </div>
-                <div>
                     <SidebarButton
                         viewName={VIEWS.SETTINGS}
                         icon={viewIcons[VIEWS.SETTINGS]}
                     />
                 </div>
-                {/* Button to change activity state coding or drawing */}
+               
             </div>
             <div
                 className="absolute left-0 top-0 z-20 w-full flex-col bg-[#252526] text-white md:static md:min-w-[300px]"

@@ -51,7 +51,7 @@ const FormComponent = () => {
         e.preventDefault()
         if (status === USER_STATUS.ATTEMPTING_JOIN) return
         if (!validateForm()) return
-        console.log("Jpininng room")
+       
 
         toast.loading("Joining room...")
         setStatus(USER_STATUS.ATTEMPTING_JOIN)
@@ -77,7 +77,7 @@ const FormComponent = () => {
         const isRedirect = sessionStorage.getItem("redirect") || false
 
         if (status === USER_STATUS.JOINED && !isRedirect) {
-            console.log("aclled")
+          
             const username = currentUser.username
             sessionStorage.setItem("redirect", "true")
             navigate(`/editor/${currentUser.roomId}`, {

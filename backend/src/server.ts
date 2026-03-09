@@ -66,8 +66,7 @@ io.on("connection", (socket) => {
     });
 
     if (isUsernameExist.length > 0) {
-      console.log("Re-entrant");
-
+     
       io.to(socket.id).emit(SocketEvent.USERNAME_EXISTS);
       return;
     }
@@ -123,7 +122,6 @@ io.on("connection", (socket) => {
   socket.on(SocketEvent.ALLOW_WRITE, ({ socketId }) => {
     const user = getUserBySocketId(socketId);
     if (!user) return;
-    console.log("USer allowed for wrote");
 
     user.canWrite = true;
     io.to(socketId).emit(SocketEvent.NOTIFY_WRITE, {
@@ -288,7 +286,7 @@ app.get("/", (req: Request, res: Response) => {
 app.post("/api/stream-token", (req, res) => {
   // 1. Authenticate the user (e.g., check session or credentials)
   //@ts-ignore
-  console.log(req.body);
+
   //@ts-ignore
   const authenticatedUser = req.body; // Get user from session/auth middleware
 
@@ -298,7 +296,7 @@ app.post("/api/stream-token", (req, res) => {
     process.env.STREAM_SECRET_KEY as string,
     { expiresIn: "24h" },
   );
-  console.log("Token sent ", token);
+
 
   // 4. Send ONLY the token back to the client
   res.json({ token });

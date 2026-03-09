@@ -53,10 +53,10 @@ export default function StreamVideoProvider({
                     throw new Error("Failed to fetch Stream token from backend")
 
                 const data = await response.json()
-                console.log(data)
+             
 
                 setStreamToken(data.token)
-                console.log("Stream token successfully fetched.")
+               
             } catch (error) {
                 console.error("Error fetching Stream token:", error)
             }
@@ -79,8 +79,7 @@ export default function StreamVideoProvider({
                 image: `https://getstream.io/random_svg/?id=${roomId}&name=${username}`,
             }
 
-            console.log("Initializing StreamVideoClient with dynamic data.")
-            console.log(streamToken)
+         
 
             const newClient = new StreamVideoClient({
                 apiKey,

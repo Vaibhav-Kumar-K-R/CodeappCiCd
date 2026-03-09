@@ -4,13 +4,13 @@ import {
 } from "@stream-io/video-react-sdk"
 
 const MyMicButton = () => {
-    const { useMicrophoneState, useLocalParticipant, useParticipants } =
+    const { useMicrophoneState ,useParticipants } =
         useCallStateHooks()
     const { microphone, isMute } = useMicrophoneState()
-    const localParticipant = useLocalParticipant()
+    
     const participants = useParticipants()
-    const callRole = localParticipant?.roles
-    console.log(callRole)
+    
+   
 
     return (
         <div>

@@ -1,7 +1,10 @@
 import { ICopilotContext } from "@/types/copilot"
 import { createContext, ReactNode, useContext, useState } from "react"
 import toast from "react-hot-toast"
-import axiosInstance from "../api/pollinationsApi"
+import { GoogleGenAI } from "@google/genai";
+
+
+
 
 const CopilotContext = createContext<ICopilotContext | null>(null)
 
@@ -19,34 +22,30 @@ const CopilotContextProvider = ({ children }: { children: ReactNode }) => {
     const [input, setInput] = useState<string>("")
     const [output, setOutput] = useState<string>("")
     const [isRunning, setIsRunning] = useState<boolean>(false)
-
+    
     const generateCode = async () => {
+        
+       
+        toast.loading("Generating code...")
+        setIsRunning(true)
+        
+        
         try {
             if (input.length === 0) {
                 toast.error("Please write a prompt")
                 return
             }
-
+            const ai = new GoogleGenAI({apiKey:import.meta.env.VITE_GEMINI_API_KEY});
+             const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: "You are a code generator copilot for project named Code Pair Stuio. Generate code based on the given prompt without any explanation. Return only the code, formatted in Markdown using the appropriate language syntax (e.g., js for JavaScript, py for Python). Do not include any additional text or explanations. If you don't know the answer, respond with 'I don't know'." + input,
+  });
             toast.loading("Generating code...")
             setIsRunning(true)
-            const response = await axiosInstance.post("/", {
-                messages: [
-                    {
-                        role: "system",
-                        content:
-                            "You are a code generator copilot for project named Code Pair Stuio. Generate code based on the given prompt without any explanation. Return only the code, formatted in Markdown using the appropriate language syntax (e.g., js for JavaScript, py for Python). Do not include any additional text or explanations. If you don't know the answer, respond with 'I don't know'.",
-                    },
-                    {
-                        role: "user",
-                        content: input,
-                    },
-                ],
-                model: "mistral",
-                private: true,
-            })
-            if (response.data) {
+           
+            if (response.text) {
                 toast.success("Code generated successfully")
-                const code = response.data
+                const code = response.text
                 if (code) setOutput(code)
             }
             setIsRunning(false)

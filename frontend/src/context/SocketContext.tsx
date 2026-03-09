@@ -75,7 +75,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
             token: string
             users: RemoteUser[]
         }) => {
-            console.log("accepted _________>------------", user)
+          
             user.token = token
             setCurrentUser(user)
             setUsers(users)
@@ -91,7 +91,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
 
     const handleUserLeft = useCallback(
         ({ user }: { user: User }) => {
-            console.log("called")
+           
 
             toast.success(`${user.username} left the room`)
             setUsers(users.filter((u: User) => u.username !== user.username))

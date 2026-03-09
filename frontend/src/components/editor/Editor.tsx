@@ -43,7 +43,7 @@ function Editor() {
     }, [setCurrentUser])
 
     const handleUnNotifyWrite = useCallback(() => {
-        console.log("called")
+     
         toast.success(`${currentUser.username} is not  allowed  to type`)
         setCurrentUser({ ...currentUser, canWrite: false })
     }, [setCurrentUser])
@@ -60,8 +60,7 @@ function Editor() {
     }, [users, setUsers])
 
     const onCodeChange = (code: string, view: ViewUpdate) => {
-        console.log(currentUser)
-
+    
         if (!currentUser.canWrite) {
             toast.error("You can't write !!!")
             return

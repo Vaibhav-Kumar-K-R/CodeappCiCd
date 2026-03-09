@@ -36,7 +36,7 @@ const ViewButton = ({ viewName, icon }: ViewButtonProps) => {
                     "data-tooltip-content": viewName,
                 })}
             >
-                <div className="m-1 flex items-center justify-center gap-4 p-2 text-xl">
+                <div className="m-1 flex items-center justify-center gap-2 p-1 text-xl">
                     {icon}
                 </div>
                 {/* Show dot for new message in chat View Button */}

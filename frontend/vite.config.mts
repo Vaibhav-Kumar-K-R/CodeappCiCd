@@ -34,5 +34,13 @@ export default defineConfig({
     },
     server: {
         open: true,
+        proxy: {
+      // Intercept any request to /jdoodle-api
+      '/jdoodle-api': {
+        target: 'https://api.jdoodle.com/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/jdoodle-api/, ''),
+      },
+    },
     },
 })
