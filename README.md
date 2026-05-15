@@ -4,6 +4,11 @@
 
 Whether you're pair programming, teaching, debugging with teammates, or conducting interviews — PairCode Studio makes it simple, fast, and effective.
 
+More features upcoming!!
+
+This is an open source project so please feel happy to contribute!
+
+
 ---
 
 ## 🚀 Features
